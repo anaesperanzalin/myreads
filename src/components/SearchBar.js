@@ -1,13 +1,31 @@
 import React from "react";
+import { search } from "./booksAPI";
 
 class SearchBar extends React.Component {
-  state = { term: "" };
-
-  onFormSubmit = event => {
-    event.preventDefault();
-
-    this.props.onSubmit(this.state.term)
+  constructor() {
+    super();
+    this.state = {
+    books: [],
+    term: ""
+    };
   }
+
+    onFormSubmit = async (event) => {
+      event.preventDefault();
+
+      await search(this.state.term).then(res => this.setState({ books: res}));
+
+      
+    };
+  
+
+//   async componentDidMount() {
+//     const books = await getAll();
+
+//     this.setState({
+//       books,
+//     });
+//   }
 
   render() {
     return (
@@ -19,9 +37,11 @@ class SearchBar extends React.Component {
               type="text"
               onChange={(e) => this.setState({ term: e.target.value })}
               value={this.state.term}
-            />{" "}
+            />
           </div>
         </form>
+        <button onClick={this.getAllBooks}>Get all the books</button>
+    <p> {`Found ${this.state.books.length} results`}</p>
       </div>
     );
   }
